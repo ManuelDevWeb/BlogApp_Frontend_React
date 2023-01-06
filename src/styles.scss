@@ -1,15 +1,23 @@
 // Variables
 $ligthGreen: #87faedfd;
 
-body {
+* {
+  font-family: "Open Sans", sans-serif;
   margin: 0;
-  padding: 0;
 }
 
-// Styles App
 .app {
+  display: flex;
+  justify-content: center;
   .container {
-    // Login & Register
+    width: 1024px;
+
+    .link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    // Styles Login & Register components
     .auth {
       height: 100vh;
       display: flex;
@@ -63,6 +71,55 @@ body {
 
         span a {
           text-decoration: none;
+        }
+      }
+    }
+
+    // Styles Navbar component
+    .navbar {
+      .container {
+        padding: 2rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .logo {
+          img {
+            width: 120px;
+          }
+        }
+
+        .nav {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          h6 {
+            font-size: 1rem;
+            font-weight: 300;
+          }
+
+          span {
+            cursor: pointer;
+          }
+
+          .write {
+            background-color: $ligthGreen;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 300;
+            border: 1px solid $ligthGreen;
+
+            &:hover {
+              color: teal;
+              background-color: white;
+              border: 1px solid teal;
+            }
+          }
         }
       }
     }
