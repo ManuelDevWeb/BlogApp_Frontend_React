@@ -123,5 +123,23 @@ $ligthGreen: #87faedfd;
         }
       }
     }
+
+    // Styles Footer component
+    footer {
+      margin-top: 100px;
+      padding: 20px;
+      background-color: $ligthGreen;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      img {
+        width: 50px;
+      }
+      a {
+        text-decoration: none;
+        color: black;
+        font-weight: 700;
+      }
+    }
   }
 }
