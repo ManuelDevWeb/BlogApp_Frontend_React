@@ -29,7 +29,7 @@ const Register = () => {
 
     try {
       // Enviamos la data al endpoint /register de tipo POST
-      await axios.post("/auth/register", infoUser);
+      await axios.post("http://localhost:8800/api/auth/register", infoUser);
       // Redireccionamos al usuario
       navigate("/login");
     } catch (err) {
