@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
-  // State para manejar los valores ingresados por el usuario en el input
+  // State para manejar los valores ingresados por el usuario en los input
   const [infoUser, setInfoUser] = useState({
     username: "",
     email: "",
@@ -11,6 +11,8 @@ const Register = () => {
   });
   // State para manejar el error
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   // Funcion que se ejecuta al escribir en los inputs
   const handleChange = (e) => {
@@ -27,8 +29,9 @@ const Register = () => {
 
     try {
       // Enviamos la data al endpoint /register de tipo POST
-      const res = await axios.post("/auth/register", infoUser);
-      console.log(res);
+      await axios.post("/auth/register", infoUser);
+      // Redireccionamos al usuario
+      navigate("/login");
     } catch (err) {
       setError(err.response.data.body);
     }
