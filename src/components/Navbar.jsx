@@ -16,7 +16,9 @@ const Navbar = () => {
       <div className="navbar">
         <div className="container">
           <div className="logo">
-            <img src={Logo} alt="Logo" />
+            <Link to={"/"}>
+              <img src={Logo} alt="Logo" />
+            </Link>
           </div>
           <div className="nav">
             <Link className="link" to="/?cat=art">
@@ -37,11 +39,13 @@ const Navbar = () => {
             <Link className="link" to="/?cat=food">
               <h6>FOOD</h6>
             </Link>
-            <span onClick={logout}>{currentUser?.username}</span>
+            <span>{currentUser?.username}</span>
             {currentUser ? (
-              <span>Logout</span>
+              <span onClick={logout}>Logout</span>
             ) : (
-              <Link className="link">Login</Link>
+              <Link className="link" to={"/login"}>
+                Login
+              </Link>
             )}
             <span className="write">
               <Link className="link" to="/write">

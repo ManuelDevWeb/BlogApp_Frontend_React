@@ -1,73 +1,90 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import moment from "moment";
 
 // Components
 import { Menu } from "../components/Menu";
 
+// Contexto (Permite acceder al contexto)
+import { AuthContext } from "../context/AuthProvider";
+
 // Images
 import Edit from "../img/edit.png";
 import Delete from "../img/delete.png";
+import { useContext } from "react";
 
 const Single = () => {
+  const [post, setPost] = useState([]);
+
+  // Accediendo a los values (state y functions) del contexto provider
+  const { currentUser } = useContext(AuthContext);
+
+  // Permite saber la informacion de la URL. En este caso hacemos split para obtener la informacion del id que viene por la req
+  const idPost = useLocation().pathname.split("/")[2];
+
+  const navigate = useNavigate();
+
+  // useEffect que se ejecuta cada que carga la pagina
+  useEffect(() => {
+    // Funcion asincrona para hacer llamado a la API y setear el valor de los posts
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8800/api/posts/${idPost}`
+        );
+        setPost(res.data.body[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, [idPost]);
+
+  // Function to delete post
+  const handleDelete = async () => {
+    try {
+      await axios.get(`http://localhost:8800/api/posts/${idPost}`);
+      // Redireccionamos
+      navigate("/");
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
     <div className="single">
       <div className="content">
-        <img
-          src="https://images.pexels.com/photos/776656/pexels-photo-776656.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          alt="Img post"
-        />
+        <img src={post.image} alt={`Img ${post.title}`} />
         <div className="user">
-          <img
-            src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-            alt="Img user"
-          />
+          {post.userImage ? (
+            <img src={post.userImage} alt={`${post.username} Img`} />
+          ) : (
+            <img
+              src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              alt={`${post.username} Img`}
+            />
+          )}
+
           <div className="info">
-            <span>Manuel</span>
-            <p>Posted 2 days go</p>
+            <span>{post.username}</span>
+            <p>Posted {moment(post.date_post).fromNow()}</p>
           </div>
-          <div className="edit">
-            <Link to={`/write?edit=2`}>
-              <img src={Edit} alt="Icon edit" />
-            </Link>
-            <Link>
-              <img src={Delete} alt="Icon delete" />
-            </Link>
-          </div>
+          {currentUser?.username === post.username && (
+            <div className="edit">
+              <Link to={`/write?edit=2`}>
+                <img src={Edit} alt="Icon edit" />
+              </Link>
+              <Link>
+                <img onClick={handleDelete} src={Delete} alt="Icon delete" />
+              </Link>
+            </div>
+          )}
         </div>
-        <h1>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga libero,
-          accusamus saepe.
-        </h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at
-          vulputate ipsum. Aenean tempus posuere erat. Quisque est leo, tempor
-          vitae varius accumsan, pretium vitae dolor. Nulla maximus magna massa,
-          vel cursus velit tristique blandit.
-          <br />
-          <br />
-          Nulla facilisi. Pellentesque rutrum sed sem lacinia bibendum. Donec
-          convallis purus et efficitur iaculis. Aenean mauris lorem, fermentum
-          ac varius sit amet, posuere id dui. Quisque pharetra ante neque, sit
-          amet mattis diam malesuada in. In tincidunt arcu eu eleifend placerat.
-          Nam pulvinar neque urna, nec placerat dolor tristique id.
-          <br />
-          <br />
-          Etiam interdum elit vel dolor porta, ac tincidunt tellus vehicula. Nam
-          lacinia accumsan nisl eget vulputate. Donec pretium felis at consequat
-          lobortis. Duis ac purus dictum, rhoncus ex id, fermentum nisl. Mauris
-          in libero turpis. Phasellus at bibendum risus. Sed posuere sit amet
-          risus eget laoreet. Sed mollis dignissim orci, sed ornare ipsum.
-          Integer vitae lobortis est.
-          <br />
-          <br />
-          Pellentesque rutrum sed sem lacinia bibendum. Donec convallis purus et
-          efficitur iaculis. Aenean mauris lorem, fermentum ac varius sit amet,
-          posuere id dui. Quisque pharetra ante neque, sit amet mattis diam
-          malesuada in. In tincidunt arcu eu eleifend placerat. Nam pulvinar
-          neque urna, nec placerat dolor tristique id. Etiam interdum elit vel
-          dolor porta, ac tincidunt tellus vehicula. Nam lacinia accumsan nisl
-          eget vulputate. Donec pretium felis at consequat lobortis. Duis ac
-          purus dictum, rhoncus ex id, fermentum nisl.
-        </p>
+        <h1>{post.title}</h1>
+        {post.desc}
       </div>
       <Menu />
     </div>

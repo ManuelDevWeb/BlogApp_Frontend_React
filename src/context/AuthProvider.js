@@ -18,20 +18,26 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(currentUser));
   }, [currentUser]);
 
+  // Funcion para registrarnos
+  const register = async (info) => {
+    await axios.post("http://localhost:8800/api/auth/register", info);
+  };
+
   // Funcion para logearnos
   const login = async (info) => {
     const res = await axios.post("http://localhost:8800/api/auth/login", info);
+    console.log(res);
     setCurrentUser(res.data);
   };
 
   // Funcion para deslogearnos
   const logout = async (info) => {
-    await axios.post("http://localhost:8800/api/auth/logout", info);
+    await axios.post("http://localhost:8800/api/auth/logout");
     setCurrentUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout }}>
+    <AuthContext.Provider value={{ currentUser, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
