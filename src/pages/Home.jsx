@@ -39,7 +39,6 @@ const Home = () => {
 
   // Permite saber la informacion de la URL. En este caso la informacion de la busqueda query
   const category = useLocation().search;
-  console.log(useLocation());
 
   // useEffect que se ejecuta cada que carga la pagina
   useEffect(() => {

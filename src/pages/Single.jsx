@@ -46,10 +46,12 @@ const Single = () => {
   // Function to delete post
   const handleDelete = async () => {
     try {
-      await axios.get(`http://localhost:8800/api/posts/${idPost}`);
+      console.log(idPost);
+      await axios.delete(`http://localhost:8800/api/posts/${idPost}`);
       // Redireccionamos
       navigate("/");
     } catch (err) {
+      console.log("Error");
       console.log(err.message);
     }
   };
@@ -86,7 +88,7 @@ const Single = () => {
         <h1>{post.title}</h1>
         {post.desc}
       </div>
-      <Menu />
+      <Menu cat={post.cat} />
     </div>
   );
 };

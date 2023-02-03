@@ -26,7 +26,6 @@ const AuthProvider = ({ children }) => {
   // Funcion para logearnos
   const login = async (info) => {
     const res = await axios.post("http://localhost:8800/api/auth/login", info);
-    console.log(res);
     setCurrentUser(res.data);
   };
 
