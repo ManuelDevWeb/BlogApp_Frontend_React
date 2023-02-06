@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 
@@ -51,7 +51,6 @@ const Single = () => {
       // Redireccionamos
       navigate("/");
     } catch (err) {
-      console.log("Error");
       console.log(err.message);
     }
   };
@@ -76,7 +75,7 @@ const Single = () => {
           </div>
           {currentUser?.username === post.username && (
             <div className="edit">
-              <Link to={`/write?edit=2`}>
+              <Link to={`/write?edit=${idPost}`} state={post}>
                 <img src={Edit} alt="Icon edit" />
               </Link>
               <Link>

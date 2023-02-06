@@ -1,20 +1,74 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import moment from "moment";
 
 // React Quill (Text Editor)
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
+// Contexto (Permite acceder al contexto)
+import { AuthContext } from "../context/AuthProvider";
+
 const Write = () => {
-  const [value, setValue] = useState("");
-  const [title, setTitle] = useState("");
+  // Almacenamos el state que viene al dar click en el logo de editar post
+  const postEdit = useLocation().state;
+
+  const [value, setValue] = useState(postEdit?.desc || "");
+  const [title, setTitle] = useState(postEdit?.title || "");
   const [file, setFile] = useState(null);
-  const [cat, setCat] = useState("");
+  const [cat, setCat] = useState(postEdit?.cat || "");
+
+  // Accediendo a los values (state y functions) del contexto provider
+  const { currentUser } = useContext(AuthContext);
+
+  // Funcion que permite subir imagenes
+  const uploadImage = async () => {
+    try {
+      // Los objetos FormData le permiten compilar un conjunto de pares clave/valor para enviar mediante XMLHttpRequest
+      const formData = new FormData();
+
+      // Asignando el valor a la clave file
+      formData.append("file", file);
+
+      const res = await axios.post(
+        "http://localhost:8800/api/upload",
+        formData
+      );
+
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Funcion que se ejecuta al dar click en el boton Publish or Update
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
 
     // Upload file and image to server
+    const imageUrl = uploadImage();
+
+    try {
+      // Si existe un state de postEdit es porque estamos actualizando, sino estamos creando uno nuevo
+      postEdit
+        ? await axios.patch(`http://localhost:8800/api/posts/${postEdit.id}`, {
+            title,
+            desc: value,
+            cat,
+            image: file ? imageUrl : "",
+          })
+        : await axios.post("http://localhost:8800/api/posts", {
+            title,
+            desc: value,
+            cat,
+            image: file ? imageUrl : "",
+            date_post: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+            uid: currentUser.id,
+          });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -23,6 +77,7 @@ const Write = () => {
         <input
           type="text"
           placeholder="Title"
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <div className="editorContainer">
@@ -47,7 +102,7 @@ const Write = () => {
           <input
             style={{ display: "none" }}
             type="file"
-            name=""
+            name="file"
             id="file"
             onChange={(e) => setFile(e.target.files[0])}
           />
@@ -65,6 +120,7 @@ const Write = () => {
           <div className="cat">
             <input
               type="radio"
+              checked={cat === "art"}
               name="cat"
               value="art"
               id="art"
@@ -75,6 +131,7 @@ const Write = () => {
           <div className="cat">
             <input
               type="radio"
+              checked={cat === "science"}
               name="cat"
               value="science"
               id="science"
@@ -85,6 +142,7 @@ const Write = () => {
           <div className="cat">
             <input
               type="radio"
+              checked={cat === "technology"}
               name="cat"
               value="technology"
               id="technology"
@@ -95,6 +153,7 @@ const Write = () => {
           <div className="cat">
             <input
               type="radio"
+              checked={cat === "cinema"}
               name="cat"
               value="cinema"
               id="cinema"
@@ -105,6 +164,7 @@ const Write = () => {
           <div className="cat">
             <input
               type="radio"
+              checked={cat === "design"}
               name="cat"
               value="design"
               id="design"
@@ -115,6 +175,7 @@ const Write = () => {
           <div className="cat">
             <input
               type="radio"
+              checked={cat === "food"}
               name="cat"
               value="food"
               id="food"
