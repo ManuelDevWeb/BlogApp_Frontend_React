@@ -46,7 +46,6 @@ const Single = () => {
   // Function to delete post
   const handleDelete = async () => {
     try {
-      console.log(idPost);
       await axios.delete(`http://localhost:8800/api/posts/${idPost}`);
       // Redireccionamos
       navigate("/");
@@ -55,10 +54,16 @@ const Single = () => {
     }
   };
 
+  // Funcion para corregir el error de la descriocion (Se mostraba las etiquetas: <p>Nuevo post</p>)
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent;
+  };
+
   return (
     <div className="single">
       <div className="content">
-        <img src={post.image} alt={`Img ${post.title}`} />
+        <img src={`../upload/${post.image}`} alt={`Img ${post.title}`} />
         <div className="user">
           {post.userImage ? (
             <img src={post.userImage} alt={`${post.username} Img`} />
@@ -85,7 +90,7 @@ const Single = () => {
           )}
         </div>
         <h1>{post.title}</h1>
-        {post.desc}
+        {getText(post.desc)}
       </div>
       <Menu cat={post.cat} />
     </div>

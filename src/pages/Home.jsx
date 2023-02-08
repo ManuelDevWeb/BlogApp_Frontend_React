@@ -57,6 +57,12 @@ const Home = () => {
     fetchData();
   }, [category]);
 
+  // Funcion para corregir el error de la descriocion (Se mostraba las etiquetas: <p>Nuevo post</p>)
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent;
+  };
+
   return (
     <div className="home">
       <div className="posts">
@@ -65,13 +71,16 @@ const Home = () => {
           posts?.map((post) => (
             <div className="post" key={post.id}>
               <div className="img">
-                <img src={post.image} alt={`Img ${post.title}`} />
+                <img
+                  src={`../upload/${post.image}`}
+                  alt={`Img ${post.title}`}
+                />
               </div>
               <div className="content">
                 <Link className="link" to={`/post/${post.id}`}>
                   <h1>{post.title}</h1>
                 </Link>
-                <p>{post.desc}</p>
+                <p>{getText(post.desc)}</p>
                 <button>Read more</button>
               </div>
             </div>

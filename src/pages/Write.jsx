@@ -16,7 +16,7 @@ const Write = () => {
 
   const [value, setValue] = useState(postEdit?.desc || "");
   const [title, setTitle] = useState(postEdit?.title || "");
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(postEdit?.image || "");
   const [cat, setCat] = useState(postEdit?.cat || "");
 
   // Accediendo a los values (state y functions) del contexto provider
@@ -25,6 +25,7 @@ const Write = () => {
   // Funcion que permite subir imagenes
   const uploadImage = async () => {
     try {
+      // Esto hace las veces de BODY
       // Los objetos FormData le permiten compilar un conjunto de pares clave/valor para enviar mediante XMLHttpRequest
       const formData = new FormData();
 
@@ -47,7 +48,7 @@ const Write = () => {
     e.preventDefault();
 
     // Upload file and image to server
-    const imageUrl = uploadImage();
+    const imageUrl = await uploadImage();
 
     try {
       // Si existe un state de postEdit es porque estamos actualizando, sino estamos creando uno nuevo
@@ -57,6 +58,7 @@ const Write = () => {
             desc: value,
             cat,
             image: file ? imageUrl : "",
+            uid: currentUser.id,
           })
         : await axios.post("http://localhost:8800/api/posts", {
             title,
@@ -102,7 +104,7 @@ const Write = () => {
           <input
             style={{ display: "none" }}
             type="file"
-            name="file"
+            name=""
             id="file"
             onChange={(e) => setFile(e.target.files[0])}
           />

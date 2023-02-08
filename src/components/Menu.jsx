@@ -59,7 +59,7 @@ const Menu = ({ cat }) => {
         // Iterando sobre los posts
         posts.map((post) => (
           <div className="post" key={post.id}>
-            <img src={post.image} alt={`Img ${post.title}`} />
+            <img src={`../upload/${post.image}`} alt={`Img ${post.title}`} />
             <h2>{post.title}</h2>
             <button>Read More</button>
           </div>
